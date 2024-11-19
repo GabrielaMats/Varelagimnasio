@@ -3,11 +3,11 @@ from rest_framework.routers import DefaultRouter
 from .views import UsuarioViewSet, MembresiaViewSet, ProductoViewSet, TransaccionViewSet
 
 router = DefaultRouter()
-router.register(r'usuarios', UsuarioViewSet)
-router.register(r'membresias', MembresiaViewSet)
-router.register(r'productos', ProductoViewSet)
-router.register(r'transacciones', TransaccionViewSet)
+router.register(r'usuarios', UsuarioViewSet, basename='usuario')
+router.register(r'membresias', MembresiaViewSet, basename='membresia')
+router.register(r'productos', ProductoViewSet, basename='producto')
+router.register(r'transacciones', TransaccionViewSet, basename='transaccion')
 
 urlpatterns = [
-    path('', include(router.urls)),  # Usa el router para generar las rutas
+    path('', include(router.urls)),  # Incluye todas las rutas del router
 ]

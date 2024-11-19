@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'gestion_VarelaGimnasio',
     'corsheaders',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
