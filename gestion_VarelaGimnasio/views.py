@@ -11,14 +11,14 @@ class UsuarioViewSet(viewsets.ModelViewSet):
 class MembresiaViewSet(viewsets.ModelViewSet):
     queryset = Membresia.objects.all()
     serializer_class = MembresiaSerializer
-
+    
 class ProductoViewSet(viewsets.ModelViewSet):
     queryset = Producto.objects.all()
     serializer_class = ProductoSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    search_fields = ['nombre', 'categoria']  # Búsqueda por nombre y categoría
-    filterset_fields = ['cantidad_stock']  # Filtrar por stock
-    ordering_fields = ['precio_unitario', 'cantidad_stock']  # Ordenar por precio o stock
+    search_fields = ['nombre', 'categoria']
+    filterset_fields = ['cantidad_stock']
+    ordering_fields = ['precio_unitario', 'cantidad_stock']
 
 class TransaccionViewSet(viewsets.ModelViewSet):
     queryset = Transaccion.objects.all()

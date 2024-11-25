@@ -2,12 +2,10 @@ from rest_framework import serializers
 from .models import Usuario, Membresia, Producto, Transaccion
 
 class UsuarioSerializer(serializers.ModelSerializer):
-    membresias = serializers.StringRelatedField(many=True, read_only=True)  # Relación con membresías
-
     class Meta:
         model = Usuario
-        fields = '__all__'
-
+        fields = ['id', 'nombre', 'correo', 'telefono']
+        
 class MembresiaSerializer(serializers.ModelSerializer):
     usuario_nombre = serializers.ReadOnlyField(source='usuario.nombre')  # Nombre del usuario asociado
 
@@ -21,6 +19,8 @@ class ProductoSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class TransaccionSerializer(serializers.ModelSerializer):
+    usuario_nombre = serializers.ReadOnlyField(source='usuario.nombre')  # Nombre del usuario asociado
+    fecha = serializers.DateTimeField(format="%Y-%m-%d", input_formats=["%Y-%m-%d", "iso-8601"])
     class Meta:
         model = Transaccion
         fields = '__all__'
