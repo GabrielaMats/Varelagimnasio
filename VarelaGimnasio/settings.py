@@ -87,10 +87,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'varela_gimnasio',
-        'USER': 'postgres',  # Usuario configurado en PostgreSQL
-        'PASSWORD': '123456',  # Contraseña del usuario
-        'HOST': 'localhost',  # Dirección del servidor PostgreSQL
-        'PORT': '5432',       # Puerto predeterminado
+        'USER': 'postgres',  
+        'PASSWORD': '123456',  
+        'HOST': 'localhost',  
+        'PORT': '5432',       
     }
 }
 

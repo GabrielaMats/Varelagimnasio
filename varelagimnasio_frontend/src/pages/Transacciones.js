@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getAll, createItem, updateItem, deleteItem } from "../services/api";
-
+import { Table, Form, Button, Container, Row, Col } from "react-bootstrap";
 
 const Transacciones = () => {
   const [transacciones, setTransacciones] = useState([]);
@@ -40,52 +40,48 @@ const Transacciones = () => {
     e.preventDefault();
 
     if (!formData.usuario_id || !formData.monto || !formData.tipo || !formData.fecha) {
-        alert("Por favor, completa todos los campos antes de enviar.");
-        return;
+      alert("Por favor, completa todos los campos antes de enviar.");
+      return;
     }
 
     try {
-        const payload = {
-            usuario: formData.usuario_id,
-            monto: formData.monto,
-            tipo: formData.tipo,
-            fecha: new Date(formData.fecha).toISOString(), // Convertir la fecha a ISO para evitar problemas
-        };
+      const payload = {
+        usuario: formData.usuario_id,
+        monto: formData.monto,
+        tipo: formData.tipo,
+        fecha: new Date(formData.fecha).toISOString(), // Convertir la fecha a ISO para evitar problemas
+      };
 
-        if (editingId) {
-            await updateItem("transacciones", editingId, payload);
-            setEditingId(null);
-        } else {
-            await createItem("/transacciones/", payload);
-        }
+      if (editingId) {
+        await updateItem("transacciones", editingId, payload);
+        setEditingId(null);
+      } else {
+        await createItem("/transacciones/", payload);
+      }
 
-        setFormData({
-            usuario_id: "",
-            monto: "",
-            tipo: "Pago",
-            fecha: "",
-        });
+      setFormData({
+        usuario_id: "",
+        monto: "",
+        tipo: "Pago",
+        fecha: "",
+      });
 
-        fetchTransacciones();
+      fetchTransacciones();
     } catch (error) {
-        console.error("Error al guardar la transacción:", error);
-        alert("Ocurrió un error al intentar guardar la transacción. Intenta nuevamente.");
+      console.error("Error al guardar la transacción:", error);
+      alert("Ocurrió un error al intentar guardar la transacción. Intenta nuevamente.");
     }
-};
+  };
 
-
-  
   const handleEdit = (transaccion) => {
     setEditingId(transaccion.id);
     setFormData({
-        usuario_id: transaccion.usuario, 
-        monto: transaccion.monto,
-        tipo: transaccion.tipo,
-        fecha: new Date(transaccion.fecha).toISOString().split("T")[0], // Obtén la fecha correcta en formato ISO
+      usuario_id: transaccion.usuario,
+      monto: transaccion.monto,
+      tipo: transaccion.tipo,
+      fecha: new Date(transaccion.fecha).toISOString().split("T")[0], // Obtén la fecha correcta en formato ISO
     });
-};
-
-  
+  };
 
   const handleDelete = async (id) => {
     try {
@@ -97,79 +93,113 @@ const Transacciones = () => {
   };
 
   return (
-    <div>
-      <h1>Transacciones</h1>
-      <form onSubmit={handleSubmit}>
-        {/* Mostrar usuario como solo lectura si estás editando */}
-        {editingId ? (
-          <div>
-            <label>Usuario:</label>
-            <p>{usuarios.find((user) => user.id === formData.usuario_id)?.nombre}</p>
-          </div>
-        ) : (
-          <select
-            value={formData.usuario_id}
-            onChange={(e) => setFormData({ ...formData, usuario_id: e.target.value })}
-            required
-          >
-            <option value="">Selecciona un Usuario</option>
-            {usuarios.map((usuario) => (
-              <option key={usuario.id} value={usuario.id}>
-                {usuario.nombre}
-              </option>
-            ))}
-          </select>
-        )}
-        <input
-          type="number"
-          placeholder="Monto"
-          value={formData.monto}
-          onChange={(e) => setFormData({ ...formData, monto: parseFloat(e.target.value) })}
-          required
-        />
-        <select
-          value={formData.tipo}
-          onChange={(e) => setFormData({ ...formData, tipo: e.target.value })}
-          required
-        >
-          <option value="Pago">Pago</option>
-          <option value="Compra">Compra</option>
-        </select>
-        <input
-          type="date"
-          value={formData.fecha}
-          onChange={(e) => setFormData({ ...formData, fecha: e.target.value })}
-          required
-        />
-        <button type="submit">{editingId ? "Actualizar" : "Crear"}</button>
-      </form>
+    <Container>
+      <h1 className="my-4">Gestión de Transacciones</h1>
+      <Form onSubmit={handleSubmit} className="mb-4">
+        <Row>
+          <Col md={3}>
+            <Form.Group>
+              <Form.Label>Usuario</Form.Label>
+              <Form.Control
+                as="select"
+                value={formData.usuario_id}
+                onChange={(e) => setFormData({ ...formData, usuario_id: e.target.value })}
+                disabled={!!editingId} // Bloquea si estás editando
+                required
+              >
+                <option value="">Selecciona un Usuario</option>
+                {usuarios.map((usuario) => (
+                  <option key={usuario.id} value={usuario.id}>
+                    {usuario.nombre}
+                  </option>
+                ))}
+              </Form.Control>
+            </Form.Group>
+          </Col>
+          <Col md={2}>
+            <Form.Group>
+              <Form.Label>Monto</Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Monto"
+                value={formData.monto}
+                onChange={(e) => setFormData({ ...formData, monto: parseFloat(e.target.value) })}
+                required
+              />
+            </Form.Group>
+          </Col>
+          <Col md={2}>
+            <Form.Group>
+              <Form.Label>Tipo</Form.Label>
+              <Form.Control
+                as="select"
+                value={formData.tipo}
+                onChange={(e) => setFormData({ ...formData, tipo: e.target.value })}
+                required
+              >
+                <option value="Pago">Pago</option>
+                <option value="Compra">Compra</option>
+              </Form.Control>
+            </Form.Group>
+          </Col>
+          <Col md={3}>
+            <Form.Group>
+              <Form.Label>Fecha</Form.Label>
+              <Form.Control
+                type="date"
+                value={formData.fecha}
+                onChange={(e) => setFormData({ ...formData, fecha: e.target.value })}
+                required
+              />
+            </Form.Group>
+          </Col>
+          <Col md={2} className="d-flex align-items-end">
+            <Button type="submit" variant="primary" block>
+              {editingId ? "Actualizar" : "Crear"}
+            </Button>
+          </Col>
+        </Row>
+      </Form>
 
-      <table border="1" style={{ marginTop: "20px", width: "100%" }}>
-  <thead>
-    <tr>
-      <th>Usuario</th>
-      <th>Monto</th>
-      <th>Tipo</th>
-      <th>Fecha</th>
-      <th>Acciones</th>
-    </tr>
-  </thead>
-  <tbody>
-    {transacciones.map((transaccion) => (
-      <tr key={transaccion.id}>
-        <td>{transaccion.usuario_nombre}</td>
-        <td>{transaccion.monto}</td>
-        <td>{transaccion.tipo}</td>
-        <td>{new Date(transaccion.fecha).toLocaleDateString()}</td>
-        <td>
-          <button onClick={() => handleEdit(transaccion)}>Editar</button>
-          <button onClick={() => handleDelete(transaccion.id)}>Eliminar</button>
-        </td>
-      </tr>
-    ))}
-  </tbody>
-</table>
-    </div>
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>Usuario</th>
+            <th>Monto</th>
+            <th>Tipo</th>
+            <th>Fecha</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {transacciones.map((transaccion) => (
+            <tr key={transaccion.id}>
+              <td>{transaccion.usuario_nombre}</td>
+              <td>{transaccion.monto}</td>
+              <td>{transaccion.tipo}</td>
+              <td>{new Date(transaccion.fecha).toLocaleDateString()}</td>
+              <td>
+                <Button
+                  variant="warning"
+                  size="sm"
+                  className="me-2"
+                  onClick={() => handleEdit(transaccion)}
+                >
+                  Editar
+                </Button>
+                <Button
+                  variant="danger"
+                  size="sm"
+                  onClick={() => handleDelete(transaccion.id)}
+                >
+                  Eliminar
+                </Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </Container>
   );
 };
 

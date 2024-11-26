@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getAll, createItem, updateItem, deleteItem } from "../services/api";
+import { Container, Table, Form, Button, Row, Col, Modal } from "react-bootstrap";
 
 function Usuarios() {
   const [usuarios, setUsuarios] = useState([]);
@@ -10,19 +11,18 @@ function Usuarios() {
   });
   const [modoEdicion, setModoEdicion] = useState(false);
   const [usuarioEditado, setUsuarioEditado] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   // Obtener todos los usuarios
   useEffect(() => {
     getAll("/usuarios/")
       .then((response) => {
-        setUsuarios(response); // Asegúrate de que el formato sea correcto
+        setUsuarios(response);
       })
       .catch((error) => {
         console.error("Error al obtener los usuarios:", error);
       });
   }, []);
-  
-  
 
   // Manejar cambios en los campos del formulario
   const handleChange = (e) => {
@@ -36,19 +36,14 @@ function Usuarios() {
   const handleCrearUsuario = () => {
     createItem("/usuarios/", nuevoUsuario)
       .then((response) => {
-        const nuevoUsuarioCreado = response; // Asegúrate de que esta respuesta contenga el usuario creado
-        setUsuarios((prevUsuarios) => [...prevUsuarios, nuevoUsuarioCreado]);
-        setNuevoUsuario({
-          nombre: "",
-          correo: "",
-          telefono: "",
-        });
+        setUsuarios((prevUsuarios) => [...prevUsuarios, response]);
+        setNuevoUsuario({ nombre: "", correo: "", telefono: "" });
+        setShowModal(false);
       })
       .catch((error) => {
         console.error("Error al crear el usuario:", error);
       });
   };
-  
 
   // Manejar edición de usuario
   const handleEditarUsuario = (usuario) => {
@@ -59,6 +54,7 @@ function Usuarios() {
       correo: usuario.correo,
       telefono: usuario.telefono,
     });
+    setShowModal(true);
   };
 
   // Actualizar un usuario
@@ -72,17 +68,13 @@ function Usuarios() {
         );
         setModoEdicion(false);
         setUsuarioEditado(null);
-        setNuevoUsuario({
-          nombre: "",
-          correo: "",
-          telefono: "",
-        });
+        setNuevoUsuario({ nombre: "", correo: "", telefono: "" });
+        setShowModal(false);
       })
       .catch((error) => {
         console.error("Error al actualizar el usuario:", error);
       });
   };
-  
 
   // Eliminar un usuario
   const handleEliminarUsuario = (id) => {
@@ -96,42 +88,23 @@ function Usuarios() {
         console.error("Error al eliminar el usuario:", error);
       });
   };
-  
 
   return (
-    <div>
-      <h1>Gestión de Usuarios</h1>
-      {/* Formulario para agregar o editar usuarios */}
-      <div>
-        <h2>{modoEdicion ? "Editar Usuario" : "Crear Usuario"}</h2>
-        <input
-          type="text"
-          name="nombre"
-          placeholder="Nombre"
-          value={nuevoUsuario.nombre}
-          onChange={handleChange}
-        />
-        <input
-          type="email"
-          name="correo"
-          placeholder="Correo Electrónico"
-          value={nuevoUsuario.correo}
-          onChange={handleChange}
-        />
-        <input
-          type="text"
-          name="telefono"
-          placeholder="Teléfono"
-          value={nuevoUsuario.telefono}
-          onChange={handleChange}
-        />
-        <button onClick={modoEdicion ? handleActualizarUsuario : handleCrearUsuario}>
-          {modoEdicion ? "Actualizar" : "Crear"}
-        </button>
-      </div>
+    <Container>
+      <h1 className="my-4 text-center">Gestión de Usuarios</h1>
+      <Button
+        variant="primary"
+        className="mb-4"
+        onClick={() => {
+          setModoEdicion(false);
+          setNuevoUsuario({ nombre: "", correo: "", telefono: "" });
+          setShowModal(true);
+        }}
+      >
+        Crear Usuario
+      </Button>
 
-      {/* Lista de usuarios */}
-      <table border="1" style={{ marginTop: "20px", width: "100%" }}>
+      <Table striped bordered hover>
         <thead>
           <tr>
             <th>Nombre</th>
@@ -141,25 +114,88 @@ function Usuarios() {
           </tr>
         </thead>
         <tbody>
-  {usuarios.map((usuario) => (
-    <tr key={usuario.id}>
-      <td>{usuario.nombre}</td>
-      <td>{usuario.correo}</td>
-      <td>{usuario.telefono}</td>
-      <td>
-        <button onClick={() => handleEditarUsuario(usuario)}>Editar</button>
-        <button onClick={() => handleEliminarUsuario(usuario.id)}>Eliminar</button>
-      </td>
-    </tr>
-  ))}
-</tbody>
+          {usuarios.map((usuario) => (
+            <tr key={usuario.id}>
+              <td>{usuario.nombre}</td>
+              <td>{usuario.correo}</td>
+              <td>{usuario.telefono}</td>
+              <td>
+                <Button
+                  variant="warning"
+                  className="me-2"
+                  onClick={() => handleEditarUsuario(usuario)}
+                >
+                  Editar
+                </Button>
+                <Button
+                  variant="danger"
+                  onClick={() => handleEliminarUsuario(usuario.id)}
+                >
+                  Eliminar
+                </Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
 
-
-      </table>
-    </div>
+      {/* Modal para Crear/Editar Usuario */}
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>{modoEdicion ? "Editar Usuario" : "Crear Usuario"}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group className="mb-3">
+              <Form.Label>Nombre</Form.Label>
+              <Form.Control
+                type="text"
+                name="nombre"
+                placeholder="Ingrese el nombre"
+                value={nuevoUsuario.nombre}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Correo Electrónico</Form.Label>
+              <Form.Control
+                type="email"
+                name="correo"
+                placeholder="Ingrese el correo"
+                value={nuevoUsuario.correo}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Teléfono</Form.Label>
+              <Form.Control
+                type="text"
+                name="telefono"
+                placeholder="Ingrese el teléfono"
+                value={nuevoUsuario.telefono}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Cancelar
+          </Button>
+          <Button
+            variant="primary"
+            onClick={modoEdicion ? handleActualizarUsuario : handleCrearUsuario}
+          >
+            {modoEdicion ? "Actualizar" : "Crear"}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </Container>
   );
 }
 
 export default Usuarios;
-
 

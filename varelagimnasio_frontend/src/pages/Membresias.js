@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { getAll, createItem, updateItem, deleteItem } from "../services/api";
+import { Container, Row, Col, Form, Button, Table, Alert } from "react-bootstrap";
 
 const Membresias = () => {
   const [membresias, setMembresias] = useState([]);
-  const [usuarios, setUsuarios] = useState([]); // Lista de usuarios para asociar membresías
+  const [usuarios, setUsuarios] = useState([]);
   const [formData, setFormData] = useState({
     usuario_id: "",
     tipo: "Mensual",
@@ -12,10 +13,11 @@ const Membresias = () => {
     precio: 0,
   });
   const [editingId, setEditingId] = useState(null);
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     fetchMembresias();
-    fetchUsuarios(); // Cargar usuarios para asociar membresías
+    fetchUsuarios();
   }, []);
 
   const fetchMembresias = async () => {
@@ -39,15 +41,14 @@ const Membresias = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validación: Asegúrate de que todos los campos estén completos
     if (!formData.usuario_id || !formData.tipo || !formData.fecha_inicio || !formData.fecha_expiracion || !formData.precio) {
-      alert("Por favor, completa todos los campos antes de enviar.");
+      setMessage({ type: "danger", text: "Por favor, completa todos los campos." });
       return;
     }
 
     try {
       const payload = {
-        usuario: formData.usuario_id, // Relaciona con el usuario
+        usuario: formData.usuario_id,
         tipo: formData.tipo,
         fecha_inicio: formData.fecha_inicio,
         fecha_expiracion: formData.fecha_expiracion,
@@ -55,27 +56,19 @@ const Membresias = () => {
       };
 
       if (editingId) {
-        // Actualizar membresía existente
         await updateItem("/membresias/", editingId, payload);
         setEditingId(null);
+        setMessage({ type: "success", text: "Membresía actualizada correctamente." });
       } else {
-        // Crear nueva membresía
         await createItem("/membresias/", payload);
+        setMessage({ type: "success", text: "Membresía creada correctamente." });
       }
 
-      // Limpiar el formulario después de enviar
-      setFormData({
-        usuario_id: "",
-        tipo: "Mensual",
-        fecha_inicio: "",
-        fecha_expiracion: "",
-        precio: 0,
-      });
-
+      setFormData({ usuario_id: "", tipo: "Mensual", fecha_inicio: "", fecha_expiracion: "", precio: 0 });
       fetchMembresias();
     } catch (error) {
       console.error("Error al guardar la membresía:", error);
-      alert("Ocurrió un error al intentar guardar la membresía. Intenta nuevamente.");
+      setMessage({ type: "danger", text: "Ocurrió un error al guardar la membresía." });
     }
   };
 
@@ -94,90 +87,137 @@ const Membresias = () => {
     try {
       await deleteItem("/membresias/", id);
       fetchMembresias();
+      setMessage({ type: "success", text: "Membresía eliminada correctamente." });
     } catch (error) {
       console.error("Error deleting membresia:", error);
+      setMessage({ type: "danger", text: "Ocurrió un error al eliminar la membresía." });
     }
   };
 
   return (
-    <div>
-      <h1>Membresías</h1>
-      <form onSubmit={handleSubmit}>
-        <select
-          value={formData.usuario_id}
-          onChange={(e) => setFormData({ ...formData, usuario_id: e.target.value })}
-          required
-          disabled={!!editingId}
-        >
-          <option value="">Selecciona un Usuario</option>
-          {usuarios.map((usuario) => (
-            <option key={usuario.id} value={usuario.id}>
-              {usuario.nombre}
-            </option>
-          ))}
-        </select>
-        <select
-          value={formData.tipo}
-          onChange={(e) => setFormData({ ...formData, tipo: e.target.value })}
-          required
-        >
-          <option value="Mensual">Mensual</option>
-          <option value="Trimestral">Trimestral</option>
-          <option value="Anual">Anual</option>
-        </select>
-        <input
-          type="date"
-          placeholder="Fecha de Inicio"
-          value={formData.fecha_inicio}
-          onChange={(e) => setFormData({ ...formData, fecha_inicio: e.target.value })}
-          required
-        />
-        <input
-          type="date"
-          placeholder="Fecha de Expiración"
-          value={formData.fecha_expiracion}
-          onChange={(e) => setFormData({ ...formData, fecha_expiracion: e.target.value })}
-          required
-        />
-        <input
-          type="number"
-          placeholder="Precio"
-          value={formData.precio}
-          onChange={(e) => setFormData({ ...formData, precio: parseFloat(e.target.value) })}
-          required
-        />
-        <button type="submit">{editingId ? "Actualizar" : "Crear"}</button>
-      </form>
+    <Container>
+      <h1 className="my-4">Gestión de Membresías</h1>
 
-      <table border="1" style={{ marginTop: "20px", width: "100%" }}>
-  <thead>
-    <tr>
-      <th>Usuario</th>
-      <th>Tipo</th>
-      <th>Fecha Inicio</th>
-      <th>Fecha Expiración</th>
-      <th>Precio</th>
-      <th>Acciones</th>
-    </tr>
-  </thead>
-  <tbody>
-    {membresias.map((membresia) => (
-      <tr key={membresia.id}>
-        <td>{membresia.usuario_nombre}</td>
-        <td>{membresia.tipo}</td>
-        <td>{new Date(membresia.fecha_inicio).toLocaleDateString()}</td>
-        <td>{new Date(membresia.fecha_expiracion).toLocaleDateString()}</td>
-        <td>{membresia.precio}</td>
-        <td>
-          <button onClick={() => handleEdit(membresia)}>Editar</button>
-          <button onClick={() => handleDelete(membresia.id)}>Eliminar</button>
-        </td>
-      </tr>
-    ))}
-  </tbody>
-</table>
-    </div>
+      {message && <Alert variant={message.type}>{message.text}</Alert>}
+
+      <Form onSubmit={handleSubmit} className="mb-4">
+        <Row className="mb-3">
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label>Usuario</Form.Label>
+              <Form.Select
+                value={formData.usuario_id}
+                onChange={(e) => setFormData({ ...formData, usuario_id: e.target.value })}
+                required
+                disabled={!!editingId}
+              >
+                <option value="">Selecciona un Usuario</option>
+                {usuarios.map((usuario) => (
+                  <option key={usuario.id} value={usuario.id}>
+                    {usuario.nombre}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+          </Col>
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label>Tipo</Form.Label>
+              <Form.Select
+                value={formData.tipo}
+                onChange={(e) => setFormData({ ...formData, tipo: e.target.value })}
+                required
+              >
+                <option value="Mensual">Mensual</option>
+                <option value="Trimestral">Trimestral</option>
+                <option value="Anual">Anual</option>
+              </Form.Select>
+            </Form.Group>
+          </Col>
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label>Precio</Form.Label>
+              <Form.Control
+                type="number"
+                value={formData.precio}
+                onChange={(e) => setFormData({ ...formData, precio: parseFloat(e.target.value) })}
+                required
+              />
+            </Form.Group>
+          </Col>
+        </Row>
+        <Row className="mb-3">
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label>Fecha de Inicio</Form.Label>
+              <Form.Control
+                type="date"
+                value={formData.fecha_inicio}
+                onChange={(e) => setFormData({ ...formData, fecha_inicio: e.target.value })}
+                required
+              />
+            </Form.Group>
+          </Col>
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label>Fecha de Expiración</Form.Label>
+              <Form.Control
+                type="date"
+                value={formData.fecha_expiracion}
+                onChange={(e) => setFormData({ ...formData, fecha_expiracion: e.target.value })}
+                required
+              />
+            </Form.Group>
+          </Col>
+        </Row>
+        <Button variant="primary" type="submit">
+          {editingId ? "Actualizar" : "Crear"}
+        </Button>
+      </Form>
+
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>Usuario</th>
+            <th>Tipo</th>
+            <th>Fecha Inicio</th>
+            <th>Fecha Expiración</th>
+            <th>Precio</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {membresias.map((membresia) => (
+            <tr key={membresia.id}>
+              <td>{membresia.usuario_nombre}</td>
+              <td>{membresia.tipo}</td>
+              <td>{new Date(membresia.fecha_inicio).toLocaleDateString()}</td>
+              <td>{new Date(membresia.fecha_expiracion).toLocaleDateString()}</td>
+              <td>{membresia.precio}</td>
+              <td>
+                <Button
+                  variant="warning"
+                  size="sm"
+                  className="me-2"
+                  onClick={() => handleEdit(membresia)}
+                >
+                  Editar
+                </Button>
+                <Button
+                  variant="danger"
+                  size="sm"
+                  onClick={() => handleDelete(membresia.id)}
+                >
+                  Eliminar
+                </Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </Container>
   );
 };
 
 export default Membresias;
+
