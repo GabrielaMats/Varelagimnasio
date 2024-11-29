@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Usuario, Membresia, Producto, Transaccion
+from .models import Usuario, Membresia, Producto, Transaccion, Factura, DetalleFactura
 
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
@@ -7,7 +7,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
         fields = ['id', 'nombre', 'correo', 'telefono']
         
 class MembresiaSerializer(serializers.ModelSerializer):
-    usuario_nombre = serializers.ReadOnlyField(source='usuario.nombre')  # Nombre del usuario asociado
+    usuario_nombre = serializers.ReadOnlyField(source='usuario.nombre')  
 
     class Meta:
         model = Membresia
@@ -24,3 +24,22 @@ class TransaccionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaccion
         fields = '__all__'
+
+class DetalleFacturaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DetalleFactura
+        fields = ['producto', 'cantidad', 'precio_unitario', 'subtotal']
+
+class FacturaSerializer(serializers.ModelSerializer):
+    detalles = DetalleFacturaSerializer(many=True)
+
+    class Meta:
+        model = Factura
+        fields = ['cliente', 'detalles', 'total']
+
+    def create(self, validated_data):
+        detalles_data = validated_data.pop('detalles')
+        factura = Factura.objects.create(**validated_data)
+        for detalle_data in detalles_data:
+            DetalleFactura.objects.create(factura=factura, **detalle_data)
+        return factura

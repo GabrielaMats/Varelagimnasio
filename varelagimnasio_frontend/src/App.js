@@ -6,6 +6,7 @@ import Usuarios from "./pages/Usuarios";
 import Membresias from "./pages/Membresias";
 import Transacciones from "./pages/Transacciones";
 import CustomNavbar from "./components/Navbar";
+import Facturacion from "./pages/Facturacion";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
           <Route path="/productos" element={<Productos />} />
           <Route path="/transacciones" element={<Transacciones />} />
           <Route path="/membresias" element={<Membresias />} />
+          <Route path="/facturacion" element={<Facturacion />} />
         </Routes>
       </div>
     </Router>

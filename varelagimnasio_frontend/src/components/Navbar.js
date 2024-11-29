@@ -27,6 +27,9 @@ function CustomNavbar() {
             <Nav.Link as={Link} to="/transacciones">
               Transacciones
             </Nav.Link>
+            <Nav.Link as={Link} to="/Facturacion">
+              Facturacion
+            </Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

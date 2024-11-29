@@ -31,4 +31,17 @@ class Transaccion(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='transacciones')
     monto = models.DecimalField(max_digits=10, decimal_places=2)
     tipo = models.CharField(max_length=100, choices=[("Pago", "Pago"), ("Compra", "Compra")])
-    fecha = models.DateTimeField(default=now)  # Utilizando now correctamente
+    fecha = models.DateTimeField(default=now)
+
+class DetalleFactura(models.Model):
+    factura = models.ForeignKey('Factura', related_name='detalles', on_delete=models.CASCADE)
+    producto = models.ForeignKey('Producto', on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField()
+    precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
+    subtotal = models.DecimalField(max_digits=10, decimal_places=2)
+
+class Factura(models.Model):
+    cliente = models.ForeignKey('Cliente', on_delete=models.CASCADE)
+    total = models.DecimalField(max_digits=10, decimal_places=2)
+
+

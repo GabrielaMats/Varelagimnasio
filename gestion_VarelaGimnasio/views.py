@@ -1,8 +1,8 @@
 from rest_framework import viewsets
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
-from .models import Usuario, Membresia, Producto, Transaccion
-from .serializers import UsuarioSerializer, MembresiaSerializer, ProductoSerializer, TransaccionSerializer
+from .models import Usuario, Membresia, Producto, Transaccion, Factura
+from .serializers import UsuarioSerializer, MembresiaSerializer, ProductoSerializer, TransaccionSerializer, FacturaSerializer
 
 class UsuarioViewSet(viewsets.ModelViewSet):
     queryset = Usuario.objects.all()
@@ -11,7 +11,7 @@ class UsuarioViewSet(viewsets.ModelViewSet):
 class MembresiaViewSet(viewsets.ModelViewSet):
     queryset = Membresia.objects.all()
     serializer_class = MembresiaSerializer
-    
+
 class ProductoViewSet(viewsets.ModelViewSet):
     queryset = Producto.objects.all()
     serializer_class = ProductoSerializer
@@ -23,3 +23,7 @@ class ProductoViewSet(viewsets.ModelViewSet):
 class TransaccionViewSet(viewsets.ModelViewSet):
     queryset = Transaccion.objects.all()
     serializer_class = TransaccionSerializer
+
+class FacturaViewSet(viewsets.ModelViewSet):
+    queryset = Factura.objects.all()
+    serializer_class = FacturaSerializer
