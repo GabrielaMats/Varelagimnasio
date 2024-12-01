@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getAll, createItem, updateItem, deleteItem } from "../services/api";
-import { Container, Table, Form, Button, Row, Col, Modal } from "react-bootstrap";
+import { Container, Table, Form, Button, Modal } from "react-bootstrap";
 
 function Usuarios() {
   const [usuarios, setUsuarios] = useState([]);
@@ -13,7 +13,7 @@ function Usuarios() {
   const [usuarioEditado, setUsuarioEditado] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  // Obtener todos los usuarios
+  
   useEffect(() => {
     getAll("/usuarios/")
       .then((response) => {
@@ -24,7 +24,7 @@ function Usuarios() {
       });
   }, []);
 
-  // Manejar cambios en los campos del formulario
+  
   const handleChange = (e) => {
     setNuevoUsuario({
       ...nuevoUsuario,
@@ -32,7 +32,7 @@ function Usuarios() {
     });
   };
 
-  // Crear un nuevo usuario
+  
   const handleCrearUsuario = () => {
     createItem("/usuarios/", nuevoUsuario)
       .then((response) => {
@@ -45,7 +45,7 @@ function Usuarios() {
       });
   };
 
-  // Manejar edición de usuario
+  
   const handleEditarUsuario = (usuario) => {
     setModoEdicion(true);
     setUsuarioEditado(usuario);
@@ -139,7 +139,7 @@ function Usuarios() {
         </tbody>
       </Table>
 
-      {/* Modal para Crear/Editar Usuario */}
+      
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>{modoEdicion ? "Editar Usuario" : "Crear Usuario"}</Modal.Title>

@@ -1,4 +1,6 @@
 from rest_framework import viewsets
+from rest_framework.response import Response
+from rest_framework import status
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from .models import Usuario, Membresia, Producto, Transaccion, Factura
@@ -27,3 +29,7 @@ class TransaccionViewSet(viewsets.ModelViewSet):
 class FacturaViewSet(viewsets.ModelViewSet):
     queryset = Factura.objects.all()
     serializer_class = FacturaSerializer
+
+    def create(self, request, *args, **kwargs):
+        print("Datos recibidos en el backend:", request.data)
+        return super().create(request, *args, **kwargs)

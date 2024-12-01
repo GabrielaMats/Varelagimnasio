@@ -639,6 +639,11 @@ COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
 COPY public."gestion_VarelaGimnasio_detallefactura" (id, cantidad, precio_unitario, subtotal, producto_id, factura_id) FROM stdin;
 1	2	400.00	800.00	2	1
 2	3	400.00	1200.00	2	2
+3	7	400.00	2800.00	2	3
+4	1	600.00	600.00	3	4
+5	3	400.00	1200.00	2	4
+6	2	600.00	1200.00	3	5
+7	1	400.00	400.00	2	5
 \.
 
 
@@ -649,6 +654,9 @@ COPY public."gestion_VarelaGimnasio_detallefactura" (id, cantidad, precio_unitar
 COPY public."gestion_VarelaGimnasio_factura" (id, fecha_emision, total, cliente_id) FROM stdin;
 1	2024-11-26 23:28:02.829288-06	800.00	3
 2	2024-11-26 23:34:04.594726-06	1200.00	2
+3	2024-12-01 11:34:26.572182-06	2800.00	10
+4	2024-12-01 11:37:07.413108-06	1800.00	8
+5	2024-12-01 12:43:22.661707-06	1600.00	10
 \.
 
 
@@ -669,6 +677,7 @@ COPY public."gestion_VarelaGimnasio_membresia" (id, precio, fecha_expiracion, fe
 
 COPY public."gestion_VarelaGimnasio_producto" (id, nombre, categoria, cantidad_stock, precio_unitario) FROM stdin;
 2	Carbohidratos	Capsulas	21	400.00
+3	Suplementos	Capsulas	90	600.00
 \.
 
 
@@ -772,14 +781,14 @@ SELECT pg_catalog.setval('public.django_migrations_id_seq', 24, true);
 -- Name: gestion_VarelaGimnasio_detallefactura_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."gestion_VarelaGimnasio_detallefactura_id_seq"', 2, true);
+SELECT pg_catalog.setval('public."gestion_VarelaGimnasio_detallefactura_id_seq"', 7, true);
 
 
 --
 -- Name: gestion_VarelaGimnasio_factura_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."gestion_VarelaGimnasio_factura_id_seq"', 2, true);
+SELECT pg_catalog.setval('public."gestion_VarelaGimnasio_factura_id_seq"', 5, true);
 
 
 --
@@ -793,7 +802,7 @@ SELECT pg_catalog.setval('public."gestion_VarelaGimnasio_membresia_id_seq"', 5, 
 -- Name: gestion_VarelaGimnasio_producto_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."gestion_VarelaGimnasio_producto_id_seq"', 2, true);
+SELECT pg_catalog.setval('public."gestion_VarelaGimnasio_producto_id_seq"', 3, true);
 
 
 --

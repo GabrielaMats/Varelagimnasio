@@ -4,48 +4,58 @@ import { Container, Row, Col, Card } from "react-bootstrap";
 function Home() {
   return (
     <Container className="mt-4">
+      <h1 className="text-center mb-4">Panel Administrativo</h1>
+      <p className="text-center">
+        Bienvenido al sistema de administración del gimnasio.
+      </p>
       <Row>
-        <Col md={12}>
-          <h1 className="text-center">¡Bienvenido a VarelaGimnasio!</h1>
-          <p className="text-center">
-            Administra usuarios, membresías, transacciones y productos de tu gimnasio de manera eficiente.
-          </p>
+        <Col md={6} lg={3}>
+          <Card className="shadow-sm text-center card-equal">
+            <Card.Body>
+              <Card.Title className="text-primary fs-4">Clientes</Card.Title>
+              <Card.Text className="fs-1 text-success">0</Card.Text>
+              <Card.Text>registrados</Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col md={6} lg={3}>
+          <Card className="shadow-sm text-center card-equal">
+            <Card.Body>
+              <Card.Title className="text-primary fs-4">Productos</Card.Title>
+              <Card.Text className="fs-1 text-success">0</Card.Text>
+              <Card.Text>disponibles</Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col md={6} lg={3}>
+          <Card className="shadow-sm text-center card-equal">
+            <Card.Body>
+              <Card.Title className="text-primary fs-4">Ventas de hoy</Card.Title>
+              <Card.Text className="fs-1 text-danger">$0</Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col md={6} lg={3}>
+          <Card className="shadow-sm text-center card-equal">
+            <Card.Body>
+              <Card.Title className="text-primary fs-4">Usuarios</Card.Title>
+              <Card.Text className="fs-1 text-info">1</Card.Text>
+              <Card.Text>administrador</Card.Text>
+            </Card.Body>
+          </Card>
         </Col>
       </Row>
-      <Row className="mt-4">
-        <Col md={6} lg={3}>
-          <Card>
+
+      <Row className="mt-5">
+        <Col>
+          <Card className="shadow-sm">
             <Card.Body>
-              <Card.Title>Usuarios</Card.Title>
-              <Card.Text>Gestiona la lista de usuarios registrados en el gimnasio.</Card.Text>
-              <a href="/usuarios" className="btn btn-primary">Ir a Usuarios</a>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={6} lg={3}>
-          <Card>
-            <Card.Body>
-              <Card.Title>Membresías</Card.Title>
-              <Card.Text>Controla los tipos y duración de las membresías activas.</Card.Text>
-              <a href="/membresias" className="btn btn-primary">Ir a Membresías</a>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={6} lg={3}>
-          <Card>
-            <Card.Body>
-              <Card.Title>Productos</Card.Title>
-              <Card.Text>Administra los productos disponibles para venta o uso.</Card.Text>
-              <a href="/productos" className="btn btn-primary">Ir a Productos</a>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={6} lg={3}>
-          <Card>
-            <Card.Body>
-              <Card.Title>Transacciones</Card.Title>
-              <Card.Text>Registra y consulta las transacciones realizadas.</Card.Text>
-              <a href="/transacciones" className="btn btn-primary">Ir a Transacciones</a>
+              <Card.Title className="text-center text-primary">
+                Actividad Reciente
+              </Card.Title>
+              <Card.Text className="text-center text-muted">
+                No hay datos recientes.
+              </Card.Text>
             </Card.Body>
           </Card>
         </Col>
@@ -55,5 +65,3 @@ function Home() {
 }
 
 export default Home;
-
-

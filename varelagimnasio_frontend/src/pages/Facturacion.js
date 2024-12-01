@@ -38,17 +38,18 @@ const Facturacion = () => {
   const handleAddDetalle = (productoId) => {
     const producto = productos.find((p) => p.id === parseInt(productoId));
     if (!producto) return;
-
+  
     const nuevoDetalle = {
       producto: producto.id,
       nombre: producto.nombre,
       cantidad: 1,
-      precio_unitario: producto.precio_unitario,
-      subtotal: producto.precio_unitario,
+      precio_unitario: parseFloat(producto.precio_unitario) || 0, 
+      subtotal: parseFloat(producto.precio_unitario) || 0, 
     };
-
+  
     setDetalles((prev) => [...prev, nuevoDetalle]);
   };
+  
 
   const handleCantidadChange = (index, cantidad) => {
     const nuevosDetalles = [...detalles];
@@ -86,15 +87,20 @@ const Facturacion = () => {
           subtotal: detalle.subtotal,
         })),
       };
+  
+      console.log("Payload enviado:", payload);
+  
       await createItem("/facturas/", payload);
       alert("Factura creada exitosamente.");
       setFormData({ cliente: "", total: 0, detalles: [] });
       setDetalles([]);
     } catch (error) {
-      console.error("Error creating factura:", error);
+      console.error("Error creando factura:", error);
       alert("Hubo un error al crear la factura.");
     }
   };
+  
+
 
   return (
     <div className="container mt-4">

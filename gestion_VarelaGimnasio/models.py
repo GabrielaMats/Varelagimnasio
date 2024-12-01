@@ -11,11 +11,11 @@ class Usuario(models.Model):
         return self.nombre
 
 class Membresia(models.Model):
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='membresias', null=True)  # Permite null temporalmente
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='membresias', null=True) 
     tipo = models.CharField(max_length=100, default="Mensual")
     fecha_inicio = models.DateField(default=date.today)
     fecha_expiracion = models.DateField(default=date.today() + timedelta(days=30))
-    precio = models.DecimalField(max_digits=10, decimal_places=2, null=True)  # Permite null temporalmente
+    precio = models.DecimalField(max_digits=10, decimal_places=2, null=True) 
 
     
 class Producto(models.Model):
@@ -33,15 +33,16 @@ class Transaccion(models.Model):
     tipo = models.CharField(max_length=100, choices=[("Pago", "Pago"), ("Compra", "Compra")])
     fecha = models.DateTimeField(default=now)
 
+class Factura(models.Model):
+    cliente = models.ForeignKey("Usuario", on_delete=models.CASCADE)
+    total = models.DecimalField(max_digits=10, decimal_places=2)
+    fecha_emision = models.DateTimeField(auto_now_add=True)
+
 class DetalleFactura(models.Model):
-    factura = models.ForeignKey('Factura', related_name='detalles', on_delete=models.CASCADE)
-    producto = models.ForeignKey('Producto', on_delete=models.CASCADE)
+    factura = models.ForeignKey(Factura, related_name="detalles", on_delete=models.CASCADE)
+    producto = models.ForeignKey("Producto", on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField()
     precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
     subtotal = models.DecimalField(max_digits=10, decimal_places=2)
-
-class Factura(models.Model):
-    cliente = models.ForeignKey('Cliente', on_delete=models.CASCADE)
-    total = models.DecimalField(max_digits=10, decimal_places=2)
 
 

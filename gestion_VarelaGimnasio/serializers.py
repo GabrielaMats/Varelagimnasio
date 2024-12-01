@@ -19,7 +19,7 @@ class ProductoSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class TransaccionSerializer(serializers.ModelSerializer):
-    usuario_nombre = serializers.ReadOnlyField(source='usuario.nombre')  # Nombre del usuario asociado
+    usuario_nombre = serializers.ReadOnlyField(source='usuario.nombre') 
     fecha = serializers.DateTimeField(format="%Y-%m-%d", input_formats=["%Y-%m-%d", "iso-8601"])
     class Meta:
         model = Transaccion
@@ -31,11 +31,11 @@ class DetalleFacturaSerializer(serializers.ModelSerializer):
         fields = ['producto', 'cantidad', 'precio_unitario', 'subtotal']
 
 class FacturaSerializer(serializers.ModelSerializer):
-    detalles = DetalleFacturaSerializer(many=True)
+    detalles = DetalleFacturaSerializer(many=True) 
 
     class Meta:
         model = Factura
-        fields = ['cliente', 'detalles', 'total']
+        fields = ['id', 'cliente', 'total', 'detalles']
 
     def create(self, validated_data):
         detalles_data = validated_data.pop('detalles')
