@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('admin/', admin.site.urls),  # Ruta para el panel de administración
-    path('api/', include('gestion_VarelaGimnasio.urls')),  # Incluye las rutas de la aplicación
+    path('admin/', admin.site.urls), 
+    path('api/', include('gestion_VarelaGimnasio.urls')),
 ]
 

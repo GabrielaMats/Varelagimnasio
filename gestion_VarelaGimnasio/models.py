@@ -1,7 +1,6 @@
 from django.db import models
 from datetime import date, timedelta
 from django.utils.timezone import now
-from django.contrib.auth.models import AbstractUser
 
 class Usuario(models.Model):
     nombre = models.CharField(max_length=100)
@@ -10,13 +9,6 @@ class Usuario(models.Model):
 
     def __str__(self):
         return self.nombre
-    
-class Usuario(AbstractUser):
-    ROLES = [
-        ('ADMIN', 'Administrador'),
-        ('CAJERA', 'Cajera'),
-    ]
-    rol = models.CharField(max_length=10, choices=ROLES, default='CAJERA')
 
 class Membresia(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='membresias', null=True) 

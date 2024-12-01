@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-AUTH_USER_MODEL = 'gestion_VarelaGimnasio.Usuario'
+# AUTH_USER_MODEL = 'gestion_VarelaGimnasio.Usuario'
 
 # Application definition
 

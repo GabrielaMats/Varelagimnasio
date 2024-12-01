@@ -4,7 +4,7 @@ import { Table, Form, Button, Container, Row, Col } from "react-bootstrap";
 
 const Transacciones = () => {
   const [transacciones, setTransacciones] = useState([]);
-  const [usuarios, setUsuarios] = useState([]); // Lista de usuarios para el dropdown
+  const [usuarios, setUsuarios] = useState([]); 
   const [formData, setFormData] = useState({
     usuario_id: "",
     monto: "",
@@ -15,7 +15,7 @@ const Transacciones = () => {
 
   useEffect(() => {
     fetchTransacciones();
-    fetchUsuarios(); // Obtener lista de usuarios para asociar transacciones
+    fetchUsuarios(); 
   }, []);
 
   const fetchTransacciones = async () => {
@@ -49,7 +49,7 @@ const Transacciones = () => {
         usuario: formData.usuario_id,
         monto: formData.monto,
         tipo: formData.tipo,
-        fecha: new Date(formData.fecha).toISOString(), // Convertir la fecha a ISO para evitar problemas
+        fecha: new Date(formData.fecha).toISOString(), 
       };
 
       if (editingId) {
@@ -79,7 +79,7 @@ const Transacciones = () => {
       usuario_id: transaccion.usuario,
       monto: transaccion.monto,
       tipo: transaccion.tipo,
-      fecha: new Date(transaccion.fecha).toISOString().split("T")[0], // Obtén la fecha correcta en formato ISO
+      fecha: new Date(transaccion.fecha).toISOString().split("T")[0], 
     });
   };
 
@@ -104,7 +104,7 @@ const Transacciones = () => {
                 as="select"
                 value={formData.usuario_id}
                 onChange={(e) => setFormData({ ...formData, usuario_id: e.target.value })}
-                disabled={!!editingId} // Bloquea si estás editando
+                disabled={!!editingId}
                 required
               >
                 <option value="">Selecciona un Usuario</option>
