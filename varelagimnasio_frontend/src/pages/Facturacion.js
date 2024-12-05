@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { getAll, createItem } from "../services/api";
 import { Button, Table, Form, Row, Col } from "react-bootstrap";
+import InvoicePDF from "../components/InvoicePDF";
+import { pdf } from "@react-pdf/renderer";
 
 const Facturacion = () => {
   const [clientes, setClientes] = useState([]);
@@ -9,8 +11,8 @@ const Facturacion = () => {
   const [formData, setFormData] = useState({
     cliente: "",
     total: 0,
-    detalles: [],
   });
+  const [facturaGenerada, setFacturaGenerada] = useState(null);
 
   useEffect(() => {
     fetchClientes();
@@ -38,18 +40,17 @@ const Facturacion = () => {
   const handleAddDetalle = (productoId) => {
     const producto = productos.find((p) => p.id === parseInt(productoId));
     if (!producto) return;
-  
+
     const nuevoDetalle = {
       producto: producto.id,
       nombre: producto.nombre,
       cantidad: 1,
-      precio_unitario: parseFloat(producto.precio_unitario) || 0, 
-      subtotal: parseFloat(producto.precio_unitario) || 0, 
+      precio_unitario: parseFloat(producto.precio_unitario),
+      subtotal: parseFloat(producto.precio_unitario),
     };
-  
+
     setDetalles((prev) => [...prev, nuevoDetalle]);
   };
-  
 
   const handleCantidadChange = (index, cantidad) => {
     const nuevosDetalles = [...detalles];
@@ -87,20 +88,47 @@ const Facturacion = () => {
           subtotal: detalle.subtotal,
         })),
       };
-  
-      console.log("Payload enviado:", payload);
-  
-      await createItem("/facturas/", payload);
-      alert("Factura creada exitosamente.");
-      setFormData({ cliente: "", total: 0, detalles: [] });
+
+      if (!formData.cliente || detalles.length === 0) {
+        alert("Por favor, selecciona un cliente y agrega al menos un producto.");
+        return;
+      }
+
+      const factura = await createItem("/facturas/", payload);
+      setFacturaGenerada({
+        ...factura,
+        clienteNombre: getClienteNombre(factura.cliente),
+      });
+
+      // Generar PDF automáticamente
+      const pdfBlob = await pdf(
+        <InvoicePDF
+          factura={{
+            ...factura,
+            clienteNombre: getClienteNombre(factura.cliente),
+          }}
+          detalles={detalles}
+        />
+      ).toBlob();
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+      const link = document.createElement("a");
+      link.href = pdfUrl;
+      link.download = `Factura_${factura.id}.pdf`;
+      link.click();
+
+      alert("Factura creada y PDF generado exitosamente.");
+      setFormData({ cliente: "", total: 0 });
       setDetalles([]);
     } catch (error) {
       console.error("Error creando factura:", error);
       alert("Hubo un error al crear la factura.");
     }
   };
-  
 
+  const getClienteNombre = (clienteId) => {
+    const cliente = clientes.find((c) => c.id === clienteId);
+    return cliente ? cliente.nombre : "Desconocido";
+  };
 
   return (
     <div className="container mt-4">
@@ -148,11 +176,11 @@ const Facturacion = () => {
       <Table striped bordered hover>
         <thead>
           <tr>
-            <th>Producto</th>
-            <th>Cantidad</th>
-            <th>Precio Unitario</th>
-            <th>Subtotal</th>
-            <th>Acciones</th>
+            <th style={{ textAlign: "center", width: "25%" }}>Producto</th>
+            <th style={{ textAlign: "center", width: "15%" }}>Cantidad</th>
+            <th style={{ textAlign: "center", width: "20%" }}>Precio Unitario</th>
+            <th style={{ textAlign: "center", width: "20%" }}>Subtotal</th>
+            <th style={{ textAlign: "center", width: "20%" }}>Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -169,8 +197,8 @@ const Facturacion = () => {
                   min="1"
                 />
               </td>
-              <td>{detalle.precio_unitario.toFixed(2)}</td>
-              <td>{detalle.subtotal.toFixed(2)}</td>
+              <td>${detalle.precio_unitario.toFixed(2)}</td>
+              <td>${detalle.subtotal.toFixed(2)}</td>
               <td>
                 <Button
                   variant="danger"
@@ -196,3 +224,4 @@ const Facturacion = () => {
 };
 
 export default Facturacion;
+
