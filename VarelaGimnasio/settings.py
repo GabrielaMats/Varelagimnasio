@@ -24,9 +24,9 @@ APPEND_SLASH = True
 SECRET_KEY = 'django-insecure-nnhl6(3#cgjp10$%nxs0!6!=c@&c!kt55lkjyy@ize@jebr)f6'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 
 # AUTH_USER_MODEL = 'gestion_VarelaGimnasio.Usuario'
 
