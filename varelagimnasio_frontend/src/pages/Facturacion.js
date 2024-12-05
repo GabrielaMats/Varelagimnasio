@@ -95,21 +95,30 @@ const Facturacion = () => {
       }
 
       const factura = await createItem("/facturas/", payload);
+
+      
+      const detallesConNombre = detalles.map((detalle) => ({
+        ...detalle,
+        producto_nombre:
+          productos.find((p) => p.id === detalle.producto)?.nombre || "N/A",
+      }));
+
       setFacturaGenerada({
         ...factura,
         clienteNombre: getClienteNombre(factura.cliente),
       });
 
-      // Generar PDF automáticamente
+      
       const pdfBlob = await pdf(
         <InvoicePDF
           factura={{
             ...factura,
             clienteNombre: getClienteNombre(factura.cliente),
           }}
-          detalles={detalles}
+          detalles={detallesConNombre}
         />
       ).toBlob();
+
       const pdfUrl = URL.createObjectURL(pdfBlob);
       const link = document.createElement("a");
       link.href = pdfUrl;

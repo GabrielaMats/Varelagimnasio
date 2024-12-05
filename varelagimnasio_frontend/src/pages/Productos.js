@@ -34,12 +34,7 @@ const Productos = () => {
       } else {
         await createItem("/productos/", formData);
       }
-      setFormData({
-        nombre: "",
-        categoria: "",
-        cantidad_stock: 0,
-        precio_unitario: 0,
-      });
+      setFormData({ nombre: "", categoria: "", cantidad_stock: 0, precio_unitario: 0 });
       fetchProductos();
     } catch (error) {
       console.error("Error saving producto:", error);
@@ -48,10 +43,7 @@ const Productos = () => {
 
   const handleEdit = (producto) => {
     setEditingId(producto.id);
-    setFormData({
-      ...producto,
-      precio_unitario: parseFloat(producto.precio_unitario || 0),
-    });
+    setFormData(producto);
   };
 
   const handleDelete = async (id) => {
@@ -76,9 +68,7 @@ const Productos = () => {
                 type="text"
                 placeholder="Nombre"
                 value={formData.nombre}
-                onChange={(e) =>
-                  setFormData({ ...formData, nombre: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
                 required
               />
             </Form.Group>
@@ -90,9 +80,7 @@ const Productos = () => {
                 type="text"
                 placeholder="Categoría"
                 value={formData.categoria}
-                onChange={(e) =>
-                  setFormData({ ...formData, categoria: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, categoria: e.target.value })}
                 required
               />
             </Form.Group>
@@ -104,12 +92,7 @@ const Productos = () => {
                 type="number"
                 placeholder="Cantidad"
                 value={formData.cantidad_stock}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    cantidad_stock: parseInt(e.target.value) || 0,
-                  })
-                }
+                onChange={(e) => setFormData({ ...formData, cantidad_stock: parseInt(e.target.value) })}
                 required
               />
             </Form.Group>
@@ -121,12 +104,7 @@ const Productos = () => {
                 type="number"
                 placeholder="Precio"
                 value={formData.precio_unitario}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    precio_unitario: parseFloat(e.target.value) || 0,
-                  })
-                }
+                onChange={(e) => setFormData({ ...formData, precio_unitario: parseFloat(e.target.value) })}
                 required
               />
             </Form.Group>
@@ -151,14 +129,11 @@ const Productos = () => {
         </thead>
         <tbody>
           {productos.map((producto) => (
-            <tr
-              key={producto.id}
-              className={producto.cantidad_stock < 5 ? "table-danger" : ""}
-            >
+            <tr key={producto.id}>
               <td>{producto.nombre}</td>
               <td>{producto.categoria}</td>
               <td>{producto.cantidad_stock}</td>
-              <td>{parseFloat(producto.precio_unitario || 0).toFixed(2)}</td>
+              <td>{producto.precio_unitario}</td>
               <td>
                 <Button
                   variant="warning"
@@ -185,5 +160,3 @@ const Productos = () => {
 };
 
 export default Productos;
-
-

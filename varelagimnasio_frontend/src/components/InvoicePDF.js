@@ -32,18 +32,18 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 12,
     padding: 5,
-    flex: 2, // Asigna más espacio a "Producto"
+    flex: 2, 
     textAlign: "left",
     borderBottom: "1px solid #000",
   },
   tableRow: {
     fontSize: 12,
     padding: 5,
-    flex: 2, // Ajusta para alinear con el encabezado
+    flex: 2, 
     textAlign: "left",
   },
   tableCell: {
-    flex: 1, // Espacio proporcional para otras columnas
+    flex: 1,
     fontSize: 12,
     padding: 5,
     textAlign: "left",
@@ -56,14 +56,14 @@ const styles = StyleSheet.create({
   },
 });
 
-// Componente para generar el documento PDF
+
 const InvoicePDF = ({ factura, detalles }) => (
   <Document>
     <Page size="A4" style={styles.page}>
-      {/* Encabezado */}
+      
       <Text style={styles.header}>Factura - Varela Gimnasio</Text>
 
-      {/* Información de la factura */}
+      
       <View style={styles.section}>
         <Text>Factura ID: {factura.id}</Text>
         <Text>Cliente: {factura.cliente_nombre || "N/A"}</Text>
@@ -74,10 +74,10 @@ const InvoicePDF = ({ factura, detalles }) => (
         <Text>Total: ${Number(factura.total).toFixed(2)}</Text>
       </View>
 
-      {/* Tabla de detalles */}
+      
       <View style={styles.section}>
         <View style={styles.table}>
-          <Text style={styles.tableHeader}>Producto</Text>
+          <Text style={styles.tableRow}>Producto</Text>
           <Text style={styles.tableCell}>Cantidad</Text>
           <Text style={styles.tableCell}>Precio Unitario</Text>
           <Text style={styles.tableCell}>Subtotal</Text>
